@@ -1,0 +1,79 @@
+# Un dispositivo Tailscale per ogni app: https://<app>.<tailnet>.ts.net, senza porta nell'indirizzo.
+# Ognuno riceve le richieste in HTTPS (certificato di Tailscale) e le passa alla porta locale
+# dell'app sul Pi (file in serve/). Solo tailnet: niente funnel, niente Internet.
+
+x-ingresso: &ingresso
+  image: tailscale/tailscale:stable
+  # Rete del Pi per raggiungere le app su 127.0.0.1. Modalità utente: nessuna interfaccia di rete,
+  # nessuna rotta, nessun conflitto con il Tailscale già installato sul Pi.
+  network_mode: host
+  security_opt:
+    - no-new-privileges:true
+  restart: unless-stopped
+
+x-ts-env: &ts-env
+  # Serve solo al primo avvio: poi l'identità resta nel volume e la chiave si toglie dal .env
+  TS_AUTHKEY: ${TS_AUTHKEY:-}
+  TS_STATE_DIR: /var/lib/tailscale
+  TS_USERSPACE: "true"
+  # Porta UDP automatica: la 41641 è già usata dal Tailscale del Pi
+  TS_TAILSCALED_EXTRA_ARGS: --port=0
+
+services:
+  sillabe:
+    <<: *ingresso
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: sillabe
+      TS_SERVE_CONFIG: /config/sillabe.json
+    volumes:
+      - sillabe-state:/var/lib/tailscale
+      # Cartella intera: un git pull aggiorna i file anche dentro il container
+      - ./serve:/config:ro
+
+  parole:
+    <<: *ingresso
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: parole
+      TS_SERVE_CONFIG: /config/parole.json
+    volumes:
+      - parole-state:/var/lib/tailscale
+      - ./serve:/config:ro
+
+  minigiochi:
+    <<: *ingresso
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: minigiochi
+      TS_SERVE_CONFIG: /config/minigiochi.json
+    volumes:
+      - minigiochi-state:/var/lib/tailscale
+      - ./serve:/config:ro
+
+  chess:
+    <<: *ingresso
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: chess
+      TS_SERVE_CONFIG: /config/chess.json
+    volumes:
+      - chess-state:/var/lib/tailscale
+      - ./serve:/config:ro
+
+  meteo:
+    <<: *ingresso
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: meteo
+      TS_SERVE_CONFIG: /config/meteo.json
+    volumes:
+      - meteo-state:/var/lib/tailscale
+      - ./serve:/config:ro
+
+volumes:
+  sillabe-state:
+  parole-state:
+  minigiochi-state:
+  chess-state:
+  meteo-state:
