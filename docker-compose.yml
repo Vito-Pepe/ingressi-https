@@ -71,9 +71,20 @@ services:
       - meteo-state:/var/lib/tailscale
       - ./serve:/config:ro
 
+  retro:
+    <<: *ingresso
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: retro
+      TS_SERVE_CONFIG: /config/retro.json
+    volumes:
+      - retro-state:/var/lib/tailscale
+      - ./serve:/config:ro
+
 volumes:
   sillabe-state:
   parole-state:
   minigiochi-state:
   chess-state:
   meteo-state:
+  retro-state:
