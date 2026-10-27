@@ -91,6 +91,16 @@ services:
       - impostore-state:/var/lib/tailscale
       - ./serve:/config:ro
 
+  pizzapp:
+    <<: *ingresso
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: pizzapp
+      TS_SERVE_CONFIG: /config/pizzapp.json
+    volumes:
+      - pizzapp-state:/var/lib/tailscale
+      - ./serve:/config:ro
+
 volumes:
   sillabe-state:
   parole-state:
@@ -99,3 +109,4 @@ volumes:
   meteo-state:
   retro-state:
   impostore-state:
+  pizzapp-state:
