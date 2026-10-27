@@ -101,6 +101,30 @@ services:
       - pizzapp-state:/var/lib/tailscale
       - ./serve:/config:ro
 
+  # Questo dispositivo si condivide con persone fuori dalla tailnet (Share), quindi NON usa la rete
+  # del Pi: in modalità utente Tailscale gira ogni porta del dispositivo su 127.0.0.1, e con
+  # network_mode: host chi lo riceve arriverebbe a tutte le porte del Pi (SSH, le altre app).
+  # Qui ha una rete sua, condivisa solo con il container dell'app: oltre alla 443 non trova niente.
+  infernotuffatori:
+    image: tailscale/tailscale:stable
+    networks:
+      - infernotuffatori
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: infernotuffatori
+      TS_SERVE_CONFIG: /config/infernotuffatori.json
+    volumes:
+      - infernotuffatori-state:/var/lib/tailscale
+      - ./serve:/config:ro
+
+networks:
+  # Rete tra l'ingresso e l'app: la crea questa repo, la repo infernotuffatori la usa come external
+  infernotuffatori:
+    name: ingresso-infernotuffatori
+
 volumes:
   sillabe-state:
   parole-state:
@@ -110,3 +134,4 @@ volumes:
   retro-state:
   impostore-state:
   pizzapp-state:
+  infernotuffatori-state:
