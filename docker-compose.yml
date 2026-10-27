@@ -81,6 +81,16 @@ services:
       - retro-state:/var/lib/tailscale
       - ./serve:/config:ro
 
+  impostore:
+    <<: *ingresso
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: impostore
+      TS_SERVE_CONFIG: /config/impostore.json
+    volumes:
+      - impostore-state:/var/lib/tailscale
+      - ./serve:/config:ro
+
 volumes:
   sillabe-state:
   parole-state:
@@ -88,3 +98,4 @@ volumes:
   chess-state:
   meteo-state:
   retro-state:
+  impostore-state:
