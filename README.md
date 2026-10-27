@@ -10,6 +10,7 @@ Indirizzi HTTPS **senza porta** per le app del Raspberry Pi, solo nella tailnet:
 | Chess | `https://chess.<tailnet>.ts.net` | 8085 |
 | Meteo | `https://meteo.<tailnet>.ts.net` | 8765 |
 | onlineEmu (giochi retro) | `https://retro.<tailnet>.ts.net` | 8088 |
+| Impostore | `https://impostore.<tailnet>.ts.net` | 8089 |
 
 La homepage resta su `https://vito.<tailnet>.ts.net` (il `tailscale serve` del Pi, porta 443).
 
@@ -53,7 +54,7 @@ Ogni dispositivo della tailnet ha un solo indirizzo HTTPS senza porta (la 443). 
 Verifica: da un dispositivo della tailnet aprire `https://minigiochi.<tailnet>.ts.net`. Dal Pi:
 
 ```bash
-for a in sillabe parole minigiochi chess meteo retro; do echo "$a: $(curl -s -o /dev/null -w '%{http_code}' https://$a.<tailnet>.ts.net)"; done
+for a in sillabe parole minigiochi chess meteo retro impostore; do echo "$a: $(curl -s -o /dev/null -w '%{http_code}' https://$a.<tailnet>.ts.net)"; done
 ```
 
 ## Aggiungere un'app
