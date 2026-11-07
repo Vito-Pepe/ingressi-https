@@ -111,6 +111,18 @@ services:
       - logoapp-state:/var/lib/tailscale
       - ./serve:/config:ro
 
+  # Pagina di stato del guardiano (repo guardiano): dai suoi pulsanti si riavviano e fermano i
+  # container del Pi, quindi questo dispositivo non va MAI condiviso (Machines → Share).
+  guardiano:
+    <<: *ingresso
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: guardiano
+      TS_SERVE_CONFIG: /config/guardiano.json
+    volumes:
+      - guardiano-state:/var/lib/tailscale
+      - ./serve:/config:ro
+
   # Questo dispositivo si condivide con persone fuori dalla tailnet (Share), quindi NON usa la rete
   # del Pi: in modalità utente Tailscale gira ogni porta del dispositivo su 127.0.0.1, e con
   # network_mode: host chi lo riceve arriverebbe a tutte le porte del Pi (SSH, le altre app).
@@ -145,4 +157,5 @@ volumes:
   impostore-state:
   pizzapp-state:
   logoapp-state:
+  guardiano-state:
   infernotuffatori-state:
