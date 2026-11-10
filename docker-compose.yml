@@ -111,6 +111,18 @@ services:
       - logoapp-state:/var/lib/tailscale
       - ./serve:/config:ro
 
+  # LogoApp di collaudo (~/logoapp-collaudo, branch collaudo): le modifiche si provano qui
+  # prima di portarle nella LogoApp vera. Solo tailnet, come logoapp.
+  logoapp-collaudo:
+    <<: *ingresso
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: logoapp-collaudo
+      TS_SERVE_CONFIG: /config/logoapp-collaudo.json
+    volumes:
+      - logoapp-collaudo-state:/var/lib/tailscale
+      - ./serve:/config:ro
+
   # Pagina di stato del guardiano (repo guardiano): dai suoi pulsanti si riavviano e fermano i
   # container del Pi, quindi questo dispositivo non va MAI condiviso (Machines → Share).
   guardiano:
@@ -157,5 +169,6 @@ volumes:
   impostore-state:
   pizzapp-state:
   logoapp-state:
+  logoapp-collaudo-state:
   guardiano-state:
   infernotuffatori-state:
