@@ -13,6 +13,7 @@ Indirizzi HTTPS **senza porta** per le app del Raspberry Pi, solo nella tailnet:
 | Impostore | `https://impostore.<tailnet>.ts.net` | 8089 |
 | Impasti (pizzapp) | `https://pizzapp.<tailnet>.ts.net` | 8090 |
 | LogoApp | `https://logoapp.<tailnet>.ts.net` | 8092 (solo su `127.0.0.1`: senza Tailscale non si apre) |
+| LogoApp collaudo | `https://logoapp-collaudo.<tailnet>.ts.net` | 8094 (solo su `127.0.0.1`: le modifiche di LogoApp si provano qui prima di portarle nella versione vera) |
 | Guardiano (stato delle app, log, pulsanti per riavviare) | `https://guardiano.<tailnet>.ts.net` | 8093 (solo su `127.0.0.1`; **mai condividere** il dispositivo: dai pulsanti si fermano i container) |
 | Infernotuffatori | `https://infernotuffatori.<tailnet>.ts.net` | 8091 (l'ingresso però arriva all'app dalla rete `ingresso-infernotuffatori`, vedi sotto) |
 
@@ -58,7 +59,7 @@ Ogni dispositivo della tailnet ha un solo indirizzo HTTPS senza porta (la 443). 
 Verifica: da un dispositivo della tailnet aprire `https://minigiochi.<tailnet>.ts.net`. Dal Pi:
 
 ```bash
-for a in sillabe parole minigiochi chess meteo retro impostore pizzapp logoapp guardiano infernotuffatori; do echo "$a: $(curl -s -o /dev/null -w '%{http_code}' https://$a.<tailnet>.ts.net)"; done
+for a in sillabe parole minigiochi chess meteo retro impostore pizzapp logoapp logoapp-collaudo guardiano infernotuffatori; do echo "$a: $(curl -s -o /dev/null -w '%{http_code}' https://$a.<tailnet>.ts.net)"; done
 ```
 
 ## Dispositivi da condividere
