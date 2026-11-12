@@ -6,7 +6,7 @@ Indirizzi HTTPS **senza porta** per le app del Raspberry Pi, solo nella tailnet:
 |---|---|---|
 | Sillabe | `https://sillabe.<tailnet>.ts.net` | 8080 |
 | Parole | `https://parole.<tailnet>.ts.net` | 8082 |
-| Minigiochi | `https://minigiochi.<tailnet>.ts.net` | 8087 |
+| Minigiochi | `https://minigiochi.<tailnet>.ts.net` | 8087; il percorso `/auguri/` va invece a 8095 (solo su `127.0.0.1`: pagina d'auguri temporanea, repo `auguri`) |
 | Chess | `https://chess.<tailnet>.ts.net` | 8085 |
 | Meteo | `https://meteo.<tailnet>.ts.net` | 8765 |
 | onlineEmu (giochi retro) | `https://retro.<tailnet>.ts.net` | 8088 |
