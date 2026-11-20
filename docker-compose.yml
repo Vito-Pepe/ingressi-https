@@ -123,6 +123,17 @@ services:
       - logoapp-collaudo-state:/var/lib/tailscale
       - ./serve:/config:ro
 
+  # Morse (repo morse): tasto del telegrafo e traduttore, pagina statica sulla 8095
+  morse:
+    <<: *ingresso
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: morse
+      TS_SERVE_CONFIG: /config/morse.json
+    volumes:
+      - morse-state:/var/lib/tailscale
+      - ./serve:/config:ro
+
   # Pagina di stato del guardiano (repo guardiano): dai suoi pulsanti si riavviano e fermano i
   # container del Pi, quindi questo dispositivo non va MAI condiviso (Machines → Share).
   guardiano:
@@ -171,4 +182,5 @@ volumes:
   logoapp-state:
   logoapp-collaudo-state:
   guardiano-state:
+  morse-state:
   infernotuffatori-state:
