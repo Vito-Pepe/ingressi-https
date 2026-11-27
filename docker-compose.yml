@@ -165,10 +165,30 @@ services:
       - infernotuffatori-state:/var/lib/tailscale
       - ./serve:/config:ro
 
+  # Selvaggi Esterni (repo selvaggiesterni): copia privata della wiki di Outer Wilds. Si condivide
+  # anche lui con persone fuori dalla tailnet, quindi come infernotuffatori ha una rete sua, con
+  # il solo container dell'app (alias selvaggiesterni-app), e non usa la rete del Pi.
+  selvaggiesterni:
+    image: tailscale/tailscale:stable
+    networks:
+      - selvaggiesterni
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: selvaggiesterni
+      TS_SERVE_CONFIG: /config/selvaggiesterni.json
+    volumes:
+      - selvaggiesterni-state:/var/lib/tailscale
+      - ./serve:/config:ro
+
 networks:
-  # Rete tra l'ingresso e l'app: la crea questa repo, la repo infernotuffatori la usa come external
+  # Reti tra l'ingresso e l'app: le crea questa repo, le repo delle app le usano come external
   infernotuffatori:
     name: ingresso-infernotuffatori
+  selvaggiesterni:
+    name: ingresso-selvaggiesterni
 
 volumes:
   sillabe-state:
@@ -183,4 +203,5 @@ volumes:
   logoapp-collaudo-state:
   guardiano-state:
   morse-state:
+  selvaggiesterni-state:
   infernotuffatori-state:
