@@ -15,9 +15,9 @@ Indirizzi HTTPS **senza porta** per le app del Raspberry Pi, solo nella tailnet:
 | LogoApp | `https://logoapp.<tailnet>.ts.net` | 8092 (solo su `127.0.0.1`: senza Tailscale non si apre) |
 | LogoApp collaudo | `https://logoapp-collaudo.<tailnet>.ts.net` | 8094 (solo su `127.0.0.1`: le modifiche di LogoApp si provano qui prima di portarle nella versione vera) |
 | Morse (tasto del telegrafo e traduttore) | `https://morse.<tailnet>.ts.net` | 8095 |
-| Selvaggi Esterni (wiki di Outer Wilds) | `https://selvaggiesterni.<tailnet>.ts.net` | 8096 |
 | Guardiano (stato delle app, log, pulsanti per riavviare) | `https://guardiano.<tailnet>.ts.net` | 8093 (solo su `127.0.0.1`; **mai condividere** il dispositivo: dai pulsanti si fermano i container) |
 | Infernotuffatori | `https://infernotuffatori.<tailnet>.ts.net` | 8091 (l'ingresso però arriva all'app dalla rete `ingresso-infernotuffatori`, vedi sotto) |
+| Selvaggi Esterni (wiki di Outer Wilds) | `https://selvaggiesterni.<tailnet>.ts.net` | 8096 (anche lui condivisibile: l'ingresso arriva all'app dalla rete `ingresso-selvaggiesterni`, vedi sotto) |
 
 La homepage resta su `https://vito.<tailnet>.ts.net` (il `tailscale serve` del Pi, porta 443).
 
@@ -27,7 +27,7 @@ Ogni dispositivo della tailnet ha un solo indirizzo HTTPS senza porta (la 443). 
 
 - Le app non vanno modificate: ognuna resta alla radice del suo indirizzo, come prima.
 - Ogni app ha un'origine sua nel browser: cookie e dati salvati non si mescolano.
-- I container usano la rete del Pi (`network_mode: host`) in modalità utente: nessuna interfaccia di rete, nessuna rotta, nessun conflitto con il Tailscale del Pi. Eccezione: `infernotuffatori`, che si condivide con un amico (sezione **Dispositivi da condividere**).
+- I container usano la rete del Pi (`network_mode: host`) in modalità utente: nessuna interfaccia di rete, nessuna rotta, nessun conflitto con il Tailscale del Pi. Eccezioni: `infernotuffatori` e `selvaggiesterni`, che si condividono con persone fuori dalla tailnet (sezione **Dispositivi da condividere**).
 - Gli indirizzi di prima (`http://vito:<porta>`, `http://192.168.1.22:<porta>`) continuano a funzionare.
 
 ## Installazione sul Raspberry Pi
@@ -68,12 +68,17 @@ for a in sillabe parole minigiochi chess meteo retro impostore pizzapp logoapp l
 
 In modalità utente Tailscale non ha un'interfaccia di rete: una connessione all'IP del dispositivo, su una porta che `serve` non gestisce, la gira a `127.0.0.1:<stessa porta>`. Con `network_mode: host` quel `127.0.0.1` è il Pi, quindi **da ognuno di questi dispositivi si arriva a tutte le porte del Pi**: SSH, tutte le app, anche quelle pubblicate solo su `127.0.0.1`. Per i dispositivi tuoi non cambia niente, ma **un dispositivo con `network_mode: host` non va mai condiviso** (Machines → Share) con chi non è nella tailnet.
 
-Un dispositivo da condividere ha invece una rete sua, come `infernotuffatori`:
+Un dispositivo da condividere ha invece una rete sua, come `infernotuffatori` e `selvaggiesterni`:
 - il servizio non usa `network_mode: host` ma una rete con nome fisso definita qui (`ingresso-infernotuffatori`);
 - l'app entra in quella rete dal suo compose (`external: true`) con un nome suo (`infernotuffatori-app`), e `serve/<nome>.json` manda lì le richieste (`http://infernotuffatori-app:3000`);
 - chi riceve il dispositivo trova solo la 443: le altre porte portano al container di Tailscale, dove non c'è niente.
 
-La rete la crea questa repo, quando parte il servizio: va avviato prima dell'app che la usa, altrimenti `docker compose up` dell'app si ferma con `network ingresso-infernotuffatori declared as external, but could not be found`.
+La rete la crea questa repo, quando parte il servizio: va avviato prima dell'app che la usa, altrimenti `docker compose up` dell'app si ferma con `network ingresso-infernotuffatori declared as external, but could not be found` (o `ingresso-selvaggiesterni`).
+
+| Dispositivo | Rete | Nome dell'app nella rete |
+|---|---|---|
+| `infernotuffatori` | `ingresso-infernotuffatori` | `infernotuffatori-app:3000` |
+| `selvaggiesterni` | `ingresso-selvaggiesterni` | `selvaggiesterni-app:3000` |
 
 ## Aggiungere un'app
 
