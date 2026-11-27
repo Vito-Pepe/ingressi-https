@@ -134,6 +134,17 @@ services:
       - morse-state:/var/lib/tailscale
       - ./serve:/config:ro
 
+  # Selvaggi Esterni (repo selvaggiesterni): copia privata della wiki di Outer Wilds sulla 8096
+  selvaggiesterni:
+    <<: *ingresso
+    environment:
+      <<: *ts-env
+      TS_HOSTNAME: selvaggiesterni
+      TS_SERVE_CONFIG: /config/selvaggiesterni.json
+    volumes:
+      - selvaggiesterni-state:/var/lib/tailscale
+      - ./serve:/config:ro
+
   # Pagina di stato del guardiano (repo guardiano): dai suoi pulsanti si riavviano e fermano i
   # container del Pi, quindi questo dispositivo non va MAI condiviso (Machines → Share).
   guardiano:
@@ -183,4 +194,5 @@ volumes:
   logoapp-collaudo-state:
   guardiano-state:
   morse-state:
+  selvaggiesterni-state:
   infernotuffatori-state:
